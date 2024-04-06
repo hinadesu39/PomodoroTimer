@@ -1,0 +1,325 @@
+﻿<Window x:Class="PomodoroTimer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PomodoroTimer"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:bh="clr-namespace:PomodoroTimer.Behaviors"
+        xmlns:cv="clr-namespace:PomodoroTimer.Converters"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Topmost="True"
+        Title="AttentionTool"
+        Height="360"
+        Width="320"
+        ResizeMode="NoResize"
+        FontFamily="微软雅黑"
+        Foreground="Snow"
+        Background="#90000000">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="1"
+                      GlassFrameThickness="-1" />
+    </WindowChrome.WindowChrome>
+    <Window.DataContext>
+        <local:MainWindowViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <Storyboard x:Key="ToClock">
+            <ThicknessAnimation Storyboard.TargetName="Clock"
+                                Storyboard.TargetProperty="Margin"
+                                From="0, 360, 0, -360"
+                                To="0, 0, 0, 0"
+                                Duration="0:0:0:0.5">
+                <ThicknessAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut" />
+                </ThicknessAnimation.EasingFunction>
+            </ThicknessAnimation>
+            <ThicknessAnimation Storyboard.TargetName="TimeBoard"
+                                Storyboard.TargetProperty="Margin"
+                                To="0, 360, 0, -360"
+                                From="0, 0, 0, 0"
+                                Duration="0:0:0:0.5">
+                <ThicknessAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut" />
+                </ThicknessAnimation.EasingFunction>
+            </ThicknessAnimation>
+            <DoubleAnimation Storyboard.TargetName="Clock"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0"
+                             To="1"
+                             Duration="0:0:0:0.5">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="TimeBoard"
+                             Storyboard.TargetProperty="Opacity"
+                             From="1"
+                             To="0"
+                             Duration="0:0:0:0.5">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Key="ToTimeBoard">
+            <ThicknessAnimation Storyboard.TargetName="TimeBoard"
+                                Storyboard.TargetProperty="Margin"
+                                From="0, 360, 0, -360"
+                                To="0, 0, 0, 0"
+                                Duration="0:0:0:0.5">
+                <ThicknessAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut" />
+                </ThicknessAnimation.EasingFunction>
+            </ThicknessAnimation>
+            <ThicknessAnimation Storyboard.TargetName="Clock"
+                                Storyboard.TargetProperty="Margin"
+                                To="0, 360, 0, -360"
+                                From="0, 0, 0, 0"
+                                Duration="0:0:0:0.5">
+                <ThicknessAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut" />
+                </ThicknessAnimation.EasingFunction>
+            </ThicknessAnimation>
+            <DoubleAnimation Storyboard.TargetName="TimeBoard"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0"
+                             To="1"
+                             Duration="0:0:0:0.5">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="Clock"
+                             Storyboard.TargetProperty="Opacity"
+                             From="1"
+                             To="0"
+                             Duration="0:0:0:0.5">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <cv:RemainingTimeToStringConverter x:Key="RemainingTimeToString" />
+        <cv:RestTimesToStringConverter x:Key="RestTimesToString" />
+        <cv:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+        <cv:BoolToVisibilityReverseConverter x:Key="BoolToVisibilityReverse" />
+    </Window.Resources>
+    <Grid>
+        <!--#region Clock -->
+        <Grid x:Name="Clock"
+              d:Opacity="1"
+              Opacity="0"
+              Margin="0, 360, 0, -360">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="70" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <DockPanel Grid.Row="0"
+                       x:Name="TitleZone"
+                       Background="Transparent">
+                <TextBlock d:Text="专注时间段(第1个/共2个)"
+                           Text="{Binding TitleBar}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+            </DockPanel>
+
+            <Canvas Grid.Row="1"
+                    Width="200"
+                    Height="200">
+                <Border Width="200"
+                        Height="200"
+                        CornerRadius="100"
+                        Background="#22ffffff"
+                        BorderThickness="0.3"
+                        BorderBrush="#616161" />
+                <Image Width="100"
+                       Canvas.Top="50"
+                       Canvas.Left="50"
+                       Source="/Resources/绿箩.png"
+                       RenderOptions.BitmapScalingMode="Fant"
+                       Visibility="{Binding ElementName=IsShowRemaingTime, Path=IsChecked,Converter={StaticResource BoolToVisibilityReverse}}" />
+                <DockPanel Canvas.Top="50"
+                           Canvas.Left="50"
+                           Width="100"
+                           Height="100"
+                           Visibility="{Binding ElementName=IsShowRemaingTime,Path=IsChecked,Converter={StaticResource BoolToVisibility}}">
+                    <TextBlock FontSize="32"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding RemainingTime,Converter={StaticResource RemainingTimeToString}}" />
+                </DockPanel>
+
+                <!-- 画出12个小时的刻度 -->
+                <ItemsControl ItemsSource="{Binding HourMarks}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Grid />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Path x:Name="Path"
+                                  Stroke="#22ffffff"
+                                  StrokeThickness="5"
+                                  Data="{Binding Data}"
+                                  StrokeEndLineCap="Round"
+                                  StrokeStartLineCap="Round" />
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding IsFill}"
+                                             Value="True">
+                                    <Setter TargetName="Path"
+                                            Property="Stroke"
+                                            Value="#b887c0" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Canvas>
+            <DockPanel Grid.Row="2">
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+                    <ToggleButton x:Name="PlayOrPause"
+                                  IsChecked="{Binding IsPlayOrPause}"
+                                  Command="{Binding PlayOrPauseCommand}"
+                                  CommandParameter="{Binding RelativeSource={RelativeSource Self},Path=IsChecked}"
+                                  Style="{StaticResource RadiusToggleButtonStyle}"
+                                  Margin="0 0 10 0" />
+                    <Button Content="&#xe60c;"
+                            Style="{StaticResource RadiusButton}"
+                            Margin="0 0 10 0"
+                            Command="{Binding ResetCommand}"
+                            Visibility="Collapsed">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:ControlStoryboardAction Storyboard="{StaticResource ToTimeBoard}"
+                                                           ControlStoryboardOption="Play" />
+                            </i:EventTrigger>
+                            <i:DataTrigger Binding="{Binding ElementName=PlayOrPause,Path=IsChecked}"
+                                           Value="true">
+                                <i:ChangePropertyAction PropertyName="Visibility"
+                                                        Value="Collapsed" />
+                            </i:DataTrigger>
+                            <i:DataTrigger Binding="{Binding ElementName=PlayOrPause,Path=IsChecked}"
+                                           Value="false">
+                                <i:ChangePropertyAction PropertyName="Visibility"
+                                                        Value="Visible" />
+                            </i:DataTrigger>
+                        </i:Interaction.Triggers>
+                    </Button>
+                    <ToggleButton x:Name="MoreButton"
+                                  Content="&#xe719;"
+                                  Style="{StaticResource RadiusButtonForPopup}" />
+                    <Popup PlacementTarget="{Binding ElementName=MoreButton}"
+                           Placement="Top"
+                           AllowsTransparency="True"
+                           IsOpen="{Binding ElementName=MoreButton,Path=IsChecked}"
+                           StaysOpen="False"
+                           HorizontalOffset="-30">
+                        <Border CornerRadius="5"
+                                Background="#99292e33"
+                                Width="140"
+                                Height="38"
+                                BorderBrush="#99000000"
+                                BorderThickness="0.3">
+                            <CheckBox Name="IsShowRemaingTime" Content="显示剩余时间" Style="{StaticResource CheckBoxStyle}"/>
+                        </Border>
+                    </Popup>
+                </StackPanel>
+            </DockPanel>
+            <DockPanel Grid.Row="3">
+                <TextBlock d:Text="下一个：5分钟休息"
+                           Text="{Binding StatusBar}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+            </DockPanel>
+        </Grid>
+        <!--#endregion-->
+
+        <!--#region TimeBoard -->
+        <Grid x:Name="TimeBoard"
+              d:Opacity="0"
+              Opacity="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="80" />
+                <RowDefinition Height="80" />
+            </Grid.RowDefinitions>
+            <DockPanel Grid.Row="0"
+                       x:Name="DragZone"
+                       Background="Transparent" />
+            <StackPanel Grid.Row="1"
+                        Background="Transparent">
+                <TextBox x:Name="Duration"
+                         Style="{StaticResource TimeBoard}"
+                         VerticalAlignment="Center">
+                    <TextBox.Text>
+                        <Binding Path="Duration"
+                                 UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <bh:DurationValidataRule  MaxDuration="99"
+                                                          MinDuration="1" />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                    <i:Interaction.Behaviors>
+                        <bh:GetTextFocusedBehavior />
+                    </i:Interaction.Behaviors>
+                </TextBox>
+            </StackPanel>
+            <StackPanel Grid.Row="2"
+                        VerticalAlignment="Center">
+                <TextBlock x:Name="RestTimesTootip"
+                           d:Text="您将没有休息时间。"
+                           Text="{Binding RestTimesTootip,Converter={StaticResource RestTimesToString}}"
+                           FontSize="16"
+                           HorizontalAlignment="Center"
+                           Margin="0 10" />
+                <CheckBox Name="checkBox"
+                          Style="{StaticResource SkipRestTimeStyle}"
+                          Content="跳过休息"
+                          Foreground="Snow"
+                          IsChecked="{Binding SkipRest}"
+                          HorizontalAlignment="Center" />
+            </StackPanel>
+
+            <Button x:Name="StarFocusButton"
+                    Grid.Row="3"
+                    Tag="&#xea82;"
+                    Content="启动专注时段"
+                    Style="{StaticResource RadiusButtonWithContentStyle}"
+                    Command="{Binding StartFocusSessionCommand}"
+                    VerticalAlignment="Center">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <i:ControlStoryboardAction Storyboard="{StaticResource ToClock}"
+                                                   ControlStoryboardOption="Play" />
+                        <i:ChangePropertyAction TargetName="PlayOrPause"
+                                                PropertyName="IsChecked"
+                                                Value="true" />
+                    </i:EventTrigger>
+                    <i:DataTrigger Binding="{Binding ElementName=Duration,Path=(Validation.HasError)}"
+                                   Value="true">
+                        <i:ChangePropertyAction PropertyName="IsEnabled"
+                                                Value="false" />
+                    </i:DataTrigger>
+                    <i:DataTrigger Binding="{Binding ElementName=Duration,Path=(Validation.HasError)}"
+                                   Value="false">
+                        <i:ChangePropertyAction PropertyName="IsEnabled"
+                                                Value="true" />
+                    </i:DataTrigger>
+                </i:Interaction.Triggers>
+            </Button>
+        </Grid>
+        <!--#endregion-->
+
+    </Grid>
+
+
+</Window>
