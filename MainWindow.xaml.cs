@@ -35,6 +35,10 @@ namespace PomodoroTimer
                     this.DragMove();
                 }
             };
+            btn_Min.Click += (s, e) =>
+            {
+                this.WindowState = WindowState.Minimized;
+            };
         }
         WindowAccentCompositor wac = null;
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)

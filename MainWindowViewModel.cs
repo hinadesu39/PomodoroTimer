@@ -24,6 +24,7 @@ namespace PomodoroTimer
         #region Ctor
         public MainWindowViewModel()
         {
+            BgImage = ["/Resources/吊兰.png", "/Resources/多肉.png", "/Resources/绿箩.png", "/Resources/青松.png", "/Resources/仙人掌.png", "/Resources/向日葵.png"];
             GenerateHourMarks();
             RestTimesTootip = Duration / 25;
             //订阅Toast交互信息
@@ -31,11 +32,27 @@ namespace PomodoroTimer
             {
                 // Obtain the arguments from the notification
                 ToastArguments args = ToastArguments.Parse(toastArgs.Argument);
+                switch (args["action"])
+                {
+                    case "continue":
+                        break;
+                    case "skipRest":
+                        elapsedTime = TimeSpan.FromMinutes(5);
+                        break;
+                    case "pause":
+                        IsPlayOrPause = false;
+                        timer.Stop();
+                        break;
+                }
+
             };
         }
         #endregion
 
         #region Properties
+        [ObservableProperty]
+        public ObservableCollection<string> bgImage;
+
         [ObservableProperty]
         public ObservableCollection<HourMark> hourMarks;
 
@@ -111,6 +128,7 @@ namespace PomodoroTimer
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += Timer_Tick;
             timer.Start();
+            isFocusTime = true;
             currentFocusStatusCount = 1;
             currentRestStatusCount = 1;
             focusStatusCount = (Duration - 1) / 25 + 1;
@@ -126,7 +144,7 @@ namespace PomodoroTimer
             {
                 TitleBar = $"专注时间段(第1个/共{focusStatusCount}个)";
                 StatusBar = "下一个: 5分钟休息";
-                RemainingTime = TimeSpan.FromMinutes(25);
+                RemainingTime = GetCurrentFocusDuration();
             }
         }
 
@@ -285,6 +303,7 @@ namespace PomodoroTimer
                         )
                         .Show();
                     StatusBar = "下一个: 无";
+                    RemainingTime = TimeSpan.FromSeconds(0);
                     IsPlayOrPause = false;
                     timer.Stop();
                     break;

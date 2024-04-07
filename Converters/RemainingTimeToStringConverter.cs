@@ -15,13 +15,13 @@ namespace PomodoroTimer.Converters
             if (value != null)
             {
                 var remainingTime = (TimeSpan)value;
-                if (remainingTime < TimeSpan.FromMinutes(1))
+                if (remainingTime == TimeSpan.FromMinutes(0))
+                {
+                    return "完成";
+                }
+                else if(remainingTime < TimeSpan.FromMinutes(1))
                 {
                     return remainingTime.ToString("ss'秒'");
-                }
-                else if(remainingTime == TimeSpan.FromMinutes(1))
-                {
-                    return "60秒";
                 }
                 else
                 {

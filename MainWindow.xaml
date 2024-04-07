@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Topmost="True"
-        Title="AttentionTool"
+        Title="PomodoroTimer"
         Height="360"
         Width="320"
         ResizeMode="NoResize"
@@ -137,11 +137,18 @@
                         BorderThickness="0.3"
                         BorderBrush="#616161" />
                 <Image Width="100"
+                       Height="100"
                        Canvas.Top="50"
                        Canvas.Left="50"
-                       Source="/Resources/绿箩.png"
                        RenderOptions.BitmapScalingMode="Fant"
-                       Visibility="{Binding ElementName=IsShowRemaingTime, Path=IsChecked,Converter={StaticResource BoolToVisibilityReverse}}" />
+                       d:Source="/Resources/向日葵.png"
+                       Tag="{Binding BgImage}"
+                       Visibility="{Binding ElementName=IsShowRemaingTime, Path=IsChecked,Converter={StaticResource BoolToVisibilityReverse}}">
+                    <i:Interaction.Behaviors>
+                        <bh:ClickToChangeBgBehavior />
+                    </i:Interaction.Behaviors>
+                </Image>
+
                 <DockPanel Canvas.Top="50"
                            Canvas.Left="50"
                            Width="100"
@@ -227,7 +234,9 @@
                                 Height="38"
                                 BorderBrush="#99000000"
                                 BorderThickness="0.3">
-                            <CheckBox Name="IsShowRemaingTime" Content="显示剩余时间" Style="{StaticResource CheckBoxStyle}"/>
+                            <CheckBox Name="IsShowRemaingTime"
+                                      Content="显示剩余时间"
+                                      Style="{StaticResource CheckBoxStyle}" />
                         </Border>
                     </Popup>
                 </StackPanel>
@@ -243,7 +252,7 @@
 
         <!--#region TimeBoard -->
         <Grid x:Name="TimeBoard"
-              d:Opacity="0"
+              d:Opacity="1"
               Opacity="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="80" />
@@ -253,7 +262,15 @@
             </Grid.RowDefinitions>
             <DockPanel Grid.Row="0"
                        x:Name="DragZone"
-                       Background="Transparent" />
+                       Background="Transparent"
+                       LastChildFill="False">
+                <Button x:Name="btn_Min"
+                        Content="&#xe642;"
+                        Style="{StaticResource TransParentButton}"
+                        ToolTip="最小化" 
+                        Margin="0 -40 0 0"/>
+            </DockPanel>
+
             <StackPanel Grid.Row="1"
                         Background="Transparent">
                 <TextBox x:Name="Duration"
