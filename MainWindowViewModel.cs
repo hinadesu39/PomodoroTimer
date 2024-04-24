@@ -256,7 +256,8 @@ namespace PomodoroTimer
                     return;
                 }
                 var perTime = GetCurrentFocusDuration() / 24;
-                HourMarks[(int)(elapsedTime / perTime)].IsFill = true;
+                for (var i = 0; i < HourMarks.Count; i++)
+                    HourMarks[i].IsFill = i <= (int)(elapsedTime / perTime);
             }
             //休息时段，并且还未完成所有休息时段
             else if (!isFocusTime && currentRestStatusCount <= restStatusCount)
@@ -279,7 +280,8 @@ namespace PomodoroTimer
                     return;
                 }
                 var perTime = TimeSpan.FromMinutes(5) / 24;
-                HourMarks[(int)(elapsedTime / perTime)].IsFill = true;
+                for (var i = 0; i < HourMarks.Count; i++)
+                    HourMarks[i].IsFill = i <= (int)(elapsedTime / perTime);
             }
         }
 
